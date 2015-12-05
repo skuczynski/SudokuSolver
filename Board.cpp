@@ -32,12 +32,12 @@ void Board::print()
 				printf("X ");
 
 			if(j == 2 || j == 5)
-				printf("|");
+				printf("| ");
 		}
 		printf("\n");
 
 		if(i == 2 || i == 5)
-			printf("— — —  — — —  — — —\n");
+			printf("— — —   — — —   — — —\n");
 	}
 }
 
