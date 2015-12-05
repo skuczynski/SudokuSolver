@@ -27,6 +27,8 @@ private:
 	void _delete_row(unsigned row, unsigned grid_copy[3][3]);
 	void _delete_column(unsigned column, unsigned grid_copy[3][3]);
 
+	bool _validate();
+
 	Board _board;	
 };
 

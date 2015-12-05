@@ -34,7 +34,14 @@ void Solver::solve()
 		_one_column_check(solved_cells);
 	}while(solved_cells != 81 && current_solved_cells != solved_cells);
 
-	printf("SOLVED!\n");
+	if(!_validate())
+	{
+		printf("board solved incorrectly\n");
+	}
+	else
+	{
+		printf("SOLVED!\n");
+	}
 }
 
 void Solver::_one_cell_check(unsigned& solved_cells)
@@ -297,4 +304,41 @@ void Solver::_delete_column(unsigned column, unsigned grid_copy[3][3])
 {
 	for(unsigned i=0; i<3; ++i)
 		grid_copy[i][column] = -1;
+}
+
+bool Solver::_validate()
+{
+	std::set<unsigned> numbers;
+	for(unsigned k=1; k<=9; ++k)
+		numbers.insert(k);
+
+	std::set<unsigned> check_numbers;
+
+	for(unsigned i=0; i<9; ++i)
+	{
+		check_numbers = numbers;
+		_check_row(i, check_numbers);
+		if(!check_numbers.empty())
+			return false;
+	}
+
+	for(unsigned j=0; j<9; ++j)
+	{
+		check_numbers = numbers;
+		_check_column(j, check_numbers);
+		if(!check_numbers.empty())
+			return false;
+	}
+
+	for(unsigned grid_i=0; grid_i<3; ++grid_i)
+	{
+		for(unsigned grid_j=0; grid_j<3; ++grid_j)
+		{
+			check_numbers = numbers;
+			_check_3x3grid(grid_i, grid_j, check_numbers);
+			if(!check_numbers.empty())
+				return false;
+		}
+	}
+	return true;
 }

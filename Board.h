@@ -6,10 +6,11 @@ class Board
 public:
 	Board();
 	Board(const Board& board);
+	Board(const unsigned board[9][9]);
 	unsigned& cell(unsigned i, unsigned j);
-	void fill(const unsigned board[9][9]);
 	void print();
 private:
-	unsigned _board[9][9];	
+	unsigned _board[9][9];
+	void _fill(const unsigned board[9][9]);	
 };
 #endif
