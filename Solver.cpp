@@ -30,6 +30,8 @@ void Solver::solve()
 		current_solved_cells = solved_cells;
 		_one_cell_check(solved_cells);
 		_one_3x3grid_check(solved_cells);
+		_one_row_check(solved_cells);
+		_one_column_check(solved_cells);
 	}while(solved_cells != 81 && current_solved_cells != solved_cells);
 
 	printf("SOLVED!\n");
@@ -57,7 +59,11 @@ void Solver::_one_cell_check(unsigned& solved_cells)
 					_check_3x3grid(i/3, j/3, numbers);
 
 					if(numbers.size() == 1)
+					{
 						_board.cell(i, j) = *numbers.begin();
+
+						++solved_cells;
+					}
 				}
 			}
 		}
@@ -116,12 +122,121 @@ void Solver::_one_3x3grid_check(unsigned &solved_cells)
 					if(number_of_zeros == 1)
 					{
 						_board.cell(grid_i*3 + zero_el_i, grid_j*3 + zero_el_j) = *it;
-						numbers.erase(*it);
+
+						++solved_cells;
 					}
 				}
 			}
 		}
+	}while(solved_cells != 81 && current_solved_cells != solved_cells);
+}
 
+
+void Solver::_one_row_check(unsigned &solved_cells)
+{
+	unsigned current_solved_cells;
+	do{
+		current_solved_cells = solved_cells;
+		for(unsigned i=0; i<9; ++i)
+		{
+			std::set<unsigned> numbers;
+			for(unsigned k=1; k<=9; ++k)
+				numbers.insert(k);
+
+			_check_row(i, numbers);
+
+			unsigned row_copy[9];
+			for(std::set<unsigned>::iterator it = numbers.begin(); it != numbers.end(); ++it)
+			{
+				for(unsigned j=0; j<9; ++j)
+					row_copy[j] = _board.cell(i, j);
+
+				for(unsigned j=0; j<9; ++j)
+					if(_is_element_in_column(j, *it))
+						row_copy[j] = -1;
+
+				for(unsigned grid_j=0; grid_j<3; ++grid_j)
+				{
+					if(_is_element_in_3x3grid(i/3, grid_j, *it))
+					{
+						row_copy[grid_j*3] = -1;
+						row_copy[grid_j*3 + 1] = -1;
+						row_copy[grid_j*3 + 2] = -1;
+					}
+				}
+				unsigned number_of_zeros = 0;
+				unsigned zero_j = 0;
+
+				for(unsigned j=0; j<9; ++j)
+				{
+					if(row_copy[j] == 0)
+					{
+						++number_of_zeros;
+						zero_j = j;
+					}
+				}
+				if(number_of_zeros == 1)
+				{
+					_board.cell(i, zero_j) = *it;
+
+					++solved_cells;
+				}
+			}
+		}
+	}while(solved_cells != 81 && current_solved_cells != solved_cells);
+}
+
+void Solver::_one_column_check(unsigned &solved_cells)
+{
+	unsigned current_solved_cells;
+	do{
+		current_solved_cells = solved_cells;
+		for(unsigned j=0; j<9; ++j)
+		{
+			std::set<unsigned> numbers;
+			for(unsigned k=1; k<=9; ++k)
+				numbers.insert(k);
+
+			_check_column(j, numbers);
+
+			unsigned column_copy[9];
+			for(std::set<unsigned>::iterator it = numbers.begin(); it != numbers.end(); ++it)
+			{
+				for(unsigned i=0; i<9; ++i)
+					column_copy[i] = _board.cell(i, j);
+
+				for(unsigned i=0; i<9; ++i)
+					if(_is_element_in_row(i, *it))
+						column_copy[i] = -1;
+
+				for(unsigned grid_i=0; grid_i<3; ++grid_i)
+				{
+					if(_is_element_in_3x3grid(grid_i, j/3, *it))
+					{
+						column_copy[grid_i*3] = -1;
+						column_copy[grid_i*3 + 1] = -1;
+						column_copy[grid_i*3 + 2] = -1;
+					}
+				}
+				unsigned number_of_zeros = 0;
+				unsigned zero_i = 0;
+
+				for(unsigned i=0; i<9; ++i)
+				{
+					if(column_copy[i] == 0)
+					{
+						++number_of_zeros;
+						zero_i = i;
+					}
+				}
+				if(number_of_zeros == 1)
+				{
+					_board.cell(zero_i, j) = *it;
+
+					++solved_cells;
+				}
+			}
+		}
 	}while(solved_cells != 81 && current_solved_cells != solved_cells);
 }
 
@@ -158,6 +273,16 @@ bool Solver::_is_element_in_column(unsigned j, unsigned number)
 	for(unsigned i=0; i<9; ++i)
 		if(_board.cell(i, j) == number)
 			return true;
+
+	return false;
+}
+
+bool Solver::_is_element_in_3x3grid(unsigned grid_i, unsigned grid_j, unsigned number)
+{
+	for(unsigned el_i=0; el_i<3; ++el_i)
+		for(unsigned el_j=0; el_j<3; ++el_j)
+			if((_board.cell(grid_i*3 + el_i, grid_j*3 + el_j)) == number)
+				return true;
 
 	return false;
 }

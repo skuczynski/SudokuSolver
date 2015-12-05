@@ -9,5 +9,5 @@ SudokuSolver: $(OBJ_FILES)
 obj/%.o: %.cpp
 	g++ $(CC_FLAGS) -c -o $@ $<
 
-clean: $(OBJ_FILES)
+clean:
 	rm $(OBJ_FILES)
