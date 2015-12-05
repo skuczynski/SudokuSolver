@@ -34,13 +34,22 @@ void Solver::solve()
 		_one_column_check(solved_cells);
 	}while(solved_cells != 81 && current_solved_cells != solved_cells);
 
-	if(!_validate())
+	if(solved_cells != 81)
 	{
-		printf("board solved incorrectly\n");
-	}
-	else
-	{
-		printf("SOLVED!\n");
+		std::set<unsigned> numbers;
+		std::pair<unsigned, unsigned> best_cell = _find_best_cell(numbers);
+
+		for(std::set<unsigned>::iterator it = numbers.begin(); it != numbers.end(); ++it)
+		{
+			Solver recursive_solver(_board);
+			recursive_solver._board.cell(best_cell.first, best_cell.second) = *it;
+			recursive_solver.solve();
+			if(recursive_solver._validate())
+			{
+				_board = recursive_solver._board;
+				break;
+			}
+		}
 	}
 }
 
@@ -341,4 +350,37 @@ bool Solver::_validate()
 		}
 	}
 	return true;
+}
+
+std::pair<unsigned, unsigned> Solver::_find_best_cell(std::set<unsigned> &numbers)
+{
+	std::pair<unsigned, unsigned> best_cell_coordinates;
+	unsigned best_cell = 9;
+	for(unsigned i=0; i<9; ++i)
+	{
+		for (unsigned j=0; j<9; ++j)
+		{
+			unsigned cell = _board.cell(i, j);
+			if(cell == 0)
+			{
+				std::set<unsigned> cell_numbers;
+				for(unsigned k=1; k<=9; ++k)
+					cell_numbers.insert(k);
+
+				_check_row(i, cell_numbers);
+				_check_column(j, cell_numbers);
+				_check_3x3grid(i/3, j/3, cell_numbers);
+
+				if(cell_numbers.size() < best_cell)
+				{
+					best_cell = cell_numbers.size();
+					best_cell_coordinates.first = i;
+					best_cell_coordinates.second = j;
+					numbers.clear();
+					numbers = cell_numbers;
+				}
+			}
+		}
+	}
+	return best_cell_coordinates;
 }

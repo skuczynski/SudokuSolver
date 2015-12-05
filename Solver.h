@@ -3,6 +3,7 @@
 
 #include "Board.h"
 #include <set>
+#include <utility>
 
 class Solver
 {
@@ -28,6 +29,7 @@ private:
 	void _delete_column(unsigned column, unsigned grid_copy[3][3]);
 
 	bool _validate();
+	std::pair<unsigned, unsigned> _find_best_cell(std::set<unsigned> &numbers);
 
 	Board _board;	
 };

@@ -5,7 +5,7 @@
 
 int main(int arc, char** argv)
 {
-	Board board = Reader::read_file("2009-04-13.sdk");
+	Board board = Reader::read_file("test.sdk");
 	Solver solver = Solver(board);
 	solver.solve();
 	solver.print();
