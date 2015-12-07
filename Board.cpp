@@ -37,7 +37,7 @@ void Board::print()
 		printf("\n");
 
 		if(i == 2 || i == 5)
-			printf("— — —   — — —   — — —\n");
+			printf("— — — + — — — + — — —\n");
 	}
 }
 

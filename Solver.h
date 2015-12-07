@@ -10,7 +10,7 @@ class Solver
 public:
 	Solver(const Board& board);
 	void print();
-	void solve();
+	bool solve();
 private:
 	void _one_cell_check(unsigned &solved_cells);
 	void _one_3x3grid_check(unsigned &solved_cells);

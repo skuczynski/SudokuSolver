@@ -10,7 +10,7 @@ void Solver::print()
 	_board.print();
 }
 
-void Solver::solve()
+bool Solver::solve()
 {
 	unsigned solved_cells(0);
 	for(unsigned i=0; i<9; ++i)
@@ -34,7 +34,11 @@ void Solver::solve()
 		_one_column_check(solved_cells);
 	}while(solved_cells != 81 && current_solved_cells != solved_cells);
 
-	if(solved_cells != 81)
+	if(solved_cells == 81)
+	{
+		return true;
+	}
+	else
 	{
 		std::set<unsigned> numbers;
 		std::pair<unsigned, unsigned> best_cell = _find_best_cell(numbers);
@@ -47,10 +51,11 @@ void Solver::solve()
 			if(recursive_solver._validate())
 			{
 				_board = recursive_solver._board;
-				break;
+				return true;
 			}
 		}
 	}
+	return false;
 }
 
 void Solver::_one_cell_check(unsigned& solved_cells)
